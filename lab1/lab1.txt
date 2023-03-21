@@ -1,0 +1,28 @@
+Laboratório 1 Software Básico 2023.1 - João Pedro Biscaia Fernandes -2110361
+
+
+4-)
+a-) Ao compilar e executar o programa, a seguinte mensagem aparece no terminal
+
+foo(4.00): 5.00
+
+
+Isso ocorreu pois o número de argumentos passado foi de 2, passando pela condicional na função main.
+
+Ao rodar com somente ./ex1, a seguinte mensagem aparece no terminal:
+
+uso do programa: ./ex1 <valor float>
+
+Isso ocorre pois o número de parâmetros foi diferente de 2, entrando na condicional da função main.
+
+Ao entrar com ex1 no terminal, aparece uma mensagem dizendo que a mesma não é umcomando, e isso ocorre pois não está no caimnho dos executáveis do computador, ou seja, seu diretório não foi encontrado, assim é preciso usar o ./ para mostraro diretório em questão para rodar.
+
+
+c-)
+Ao rodar o código com "./ex3" recebi a mensagem normal de "uso do programa: ./ex3 <valor float>", pois não passa pela função foo. Porém, ao passar um valor float também, o terminal manda uma mensagem com o seguinte formato:"foo(x): 0.00", x sendo o valor float mandado, recebendo 0 independente do valor.
+
+
+5-)
+A função dump recebe como parâmetros um ponteiro p, e um valor inteiro n, e vai printando os valores ocupados por cada byte ocupados pelo endereço.
+Com isso, vemos que as variáveis c,(um possui o valor 1, e o outro possui o valor 49, por ser "1" na tabela ASCII) por serem char, somente tem 1 byte, assim a função dump só printará um valor, enquanto i possui 4, printando 4 valores, e v[] possui 2 bytes, com os valores sendo o "1" e "\0"
+Concluímos também que a ordenação dos bytes é little endian, pois o byte menos significativo é printado seguido pelos mais significativos.
