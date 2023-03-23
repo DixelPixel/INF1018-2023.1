@@ -16,10 +16,3 @@ int main(void) {
   printf("%08x %08x\n", y, z);
 }
 
-int odd_ones(unsigned int x){
-	int par
-	for(i=9;i<1;i++){
-		if(
-
-	}
-}

@@ -1,0 +1,60 @@
+Laboratório 4 2023.1 João Pedro Biscaia Fernandes - 2110361
+
+
+1-)
+150 em hexadecimal = 0x96
+Logo, o terminal vai printar:
+dump de c: 
+endereço1 - 0x96
+
+
+-3 em hexadecimal = 0xfffd (fazendo complemento a 2 e considerando que short tem 2 bytes)
+
+logo, o terminal vai printar:
+dump de s: 
+endereço2_1 - 0xfd
+endereço2_1 - 0xfd
+
+151 em binario = 10010111 -- complemento a 2: 01101001 = (considerando que tem 4 bytes) 0xffffff69. Logo, o terminal vai printar:
+dump de i: 
+endereço3_1 - 69
+endereço3_2 - ff
+endereço3_3 - ff
+endereço3_4 - ff
+
+
+2-)
+32765 em binário = 0111111111111101 -- complemento a 2: 1000 0000 0000 0011 = 0x8003. logo, o que irá aparecer no terminal é:
+dump de l: 
+end1 - 03
+end2 - 80
+
+32771 em hexadecimal: 0x8003 - no terminal:
+
+dump de k:
+end1 - 03
+end2 - 80
+
+3-)A implementação fica da seguinte maneira:
+int xbyte (packed_t word, int bytenum) {
+  /* implementar!!! */
+    signed int ret = ((word<<(24-(8*bytenum))));
+
+  return ret>>24;
+}
+
+Passando o bit shift de 24-(8*bytenum) posições, garantimos que o bit mais significativo vira o byte de sinal, e para retornar, fazemos um outro bit shift para o primeiro byte, garantindo que mantenha o sinal do número.
+
+4-)
+No primeiro código x aparece como menor que y, por ser declarado com sinal. Logo, ocorre a conversão de 0x00000001 com complemento a 2(0xfffffffe+1)=0xffffffff, -1 que é menor que 2 declarado com y, como os 2 tem sinal. Porém, usando x como unsigned int, recebe um valor muito maior que y, mas a comparação como signed continua correta.
+
+No segundo código, x recebe unsigned, ou seja, não haverá byte que representa sinal, o maior valor será 0xffffffff, printado no terminal em seu valor decimal, que é maior do que o valor de y, logo recebendo incorreto.
+
+Como o compilador interpreta os 2 como unsigned, logo a comparação recebe incorreto. Usando %u, a comparação seria verdadeira, considerando os 2 como unsigned.
+
+5-)
+sc inicialmente tem o valor de 0xff, por ter sinal.(0000 0001 - complemento a 2 - 1111 1110 +1 = 1111 1111 = 0xff)
+Considerando isso, a representação interna de ui receberá 0xffffffff, pois o compilador faz a conversão de tamanho primeiro e depois de tipo.
+
+
+

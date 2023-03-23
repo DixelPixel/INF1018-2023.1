@@ -1,0 +1,49 @@
+Laboratório 3 Software Básico 2023.1 João Pedro Biscaia Fernandes
+
+1-)A implementação fica da seguinte maneira:
+
+/* o byte menos significativo de x e os outros bits em 0 */
+  y = x&0x000000ff;
+
+  /* o byte mais significativo com todos os bits em '1' 
+     e os outros bytes com o mesmo valor dos bytes de x */
+  z = x|0xff000000;
+
+
+
+2-)A implementação de odd_ones fica da seguinte maneira:
+
+int odd_ones(unsigned int x){
+	int par=0;
+	for(int i=0;i<32;i++){
+		par = (x>>i)& 0x00000001; 
+	}
+    if(par&0x00000001){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+da seguinte forma, fazemos um bit shift para cada byte e verifica se é 1 ou zero, somando a uma variável local par que guarda quantos bytes "1" possui, para todos os 32 bits do inteiro.
+Depois Só verifica se o número possui 1 em seu bit menos significativo, logo vendo se é par ou impar(se tem 1, sempre será impar, pois será 1* 2^0 =1, tornando o número impar ou par).
+
+
+3-)
+As implementações ficam como a seguir:
+
+
+a-)
+unsigned char switch_byte(unsigned char x){
+    unsigned char ret1=x>>4;
+    unsigned char ret2=x<<4;
+
+    return ret1+ret2;
+
+}
+
+
+b-)
+unsigned char rotate_left(unsigned char x, int n){
+    return (x>>(8-n)) + (x<<n);
+}
