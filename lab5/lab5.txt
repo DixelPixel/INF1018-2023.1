@@ -1,0 +1,56 @@
+Laboratório 5 Software Básico 2023-1 - João Pedro Biscaia Fernandes - 2110361
+
+
+1-)
+b tem 8 bytes de tamanho, sendo armazenado na memória em little endian de forma contígua na memória.
+a é um vetor para shorts, funcionando como uma "matriz" de 2 linhas e 3 colunas. Como cada par linha- coluna possui 2 bytes, precisamos multiplicar esse valor pela quantidade de pares, que é (2*3=6), logo 2*6 = 12 bytes, organizados de forma contígua na memória.
+
+2-)
+A função dump mostra a seguinte resposta:
+x1: 
+0x55ee7fff5010 - a4
+0x55ee7fff5011 - a3
+0x55ee7fff5012 - a2
+0x55ee7fff5013 - a1
+0x55ee7fff5014 - b2
+0x55ee7fff5015 - b1
+0x55ee7fff5016 - 00
+0x55ee7fff5017 - 00
+0x55ee7fff5018 - c4
+0x55ee7fff5019 - c3
+0x55ee7fff501a - c2
+0x55ee7fff501b - c1
+
+Printando o tamanho de x, vemos que tem 12 bytes. Isso ocorre pois o tipo com maior número de bytes possui 4 bytes(int), logo o tamanho da struct deve possuir múltiplos de 4 para conseguir o alinhamento de bytes.
+Como a soma dos bytes é 10, o próximo múltiplo é de 12 bytes, completando o espaço ocupado pelo short com 0s, sendo chamado de padding.
+
+3-)
+a-) 8 bytes, organizados da seguinte forma:
+[c1][][][][i][i][i][i][c2][][][]
+
+b-)16 bytes, organizados da seguinte forma:
+[l][l][l][l][l][l][l][l][c][][][][][][][]
+
+c-)8 bytes, organizados da seguinte forma:
+[i][i][i][i][c1][c2][][]
+
+d-)24 bytes, organizados da seguinte forma:
+[l][l][l][l][l][l][l][l][c][][][][][][][][c][][][][][][][]
+
+e-)3 bytes, organizados da seguinte forma:
+[c1][c2][c3]
+
+f-)16 bytes, organizados da seguinte forma:
+[s1][s1][][][i][i][i][i][c][c][c][][s2][s2][][]
+
+g-)a union é guardada na forma int e na forma char[] da seguinte forma:
+int:
+[i][i][i][i][][][][]
+char[]:
+[c][c][c][c][c][][][]
+
+h-)6 bytes, organizados da seguinte forma:
+short:
+[s][s][][][][]
+char:
+[c][c][c][c][c][]
