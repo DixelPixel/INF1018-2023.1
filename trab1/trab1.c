@@ -1,41 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define NUM_BITS 128
-typedef unsigned char BigInt[NUM_BITS/8];
-/* Atribuição (com extensão) */
-void big_val (BigInt res, long val);
-
-/* Operações Aritméticas */
-
-/* res = -a */
-void big_comp2(BigInt res, BigInt a);
-
-/* res = a + b */
-void big_sum(BigInt res, BigInt a, BigInt b);
-
-/* res = a - b */
-void big_sub(BigInt res, BigInt a, BigInt b);
-
-/* res = a * b */
-void big_mul(BigInt res, BigInt a, BigInt b);
-
-/* Operações de Deslocamento */
-
-/* res = a << n */
-void big_shl(BigInt res, BigInt a, int n);
-
-/* res = a >> n (lógico)*/
-void big_shr(BigInt res, BigInt a, int n);
-
-/* res = a >> n (aritmético)*/
-void big_sar(BigInt res, BigInt a, int n);
+#include "trab1.h"
 
 int main(void) {
   BigInt res;
   big_val(res,0xff01030405060708);
-  for(int i =0;i<16;i++){
-    printf("%x\n", res[i]);
-  }
+  
   
   return 0;
 }
@@ -43,7 +13,6 @@ int main(void) {
 void big_val (BigInt res, long val){
   for(int i =0; i<8;i++){
     unsigned char long_val= (unsigned char)((val>>i*8));
-    printf("Valor aqui = %x\n", long_val);
     res[i]=long_val;
   }
   for(int i = 8;i<16;i++){
@@ -57,5 +26,58 @@ void big_val (BigInt res, long val){
   
   
 }
-/*if(i=8)int sinal= long_val>>7;
-if(long_val) res[i]=0xff;*/
+void big_sar(BigInt res, BigInt a, int n){
+  unsigned char over=0;
+  for(int el=0;el<16;el++){
+          res[el]=a[el];
+  }
+  for(int cont=0;cont<n; cont++){
+          for(int el=15;el>=0;el--){
+                  unsigned char element = (unsigned char)res[el];
+                  res[el] = (element/2)+over;
+                  over = element*128;
+                  if((el==15) && ((element/128)==1)){
+                          res[el]+=0x80;
+                  }
+          }
+          over=0;
+  }
+  return;
+}
+void big_shr(BigInt res, BigInt a, int n){
+        unsigned char over=0;
+        for(int el=0;el<16;el++){
+                res[el]=a[el];
+                printf("%x\n", res[el]);
+        }
+        for(int cont=0;cont<n; cont++){
+                for(int el=15;el>=0;el--){
+                        unsigned char element = (unsigned char)res[el];
+                        printf("el = %d\n",el);
+                        res[el] = (element>>1)+over;
+                        over = element<<7;
+                        if((el==15) && (element&0x80)){
+                                res[el]+=0x80;
+                        }
+                }
+                over=0;
+        }
+        return;
+}
+
+void big_shl(BigInt res, BigInt a, int n){
+    unsigned char over=0;
+    for(int el=0;el<16;el++){
+        res[el]=a[el];
+        printf("%x\n", res[el]);
+    }
+    for(int cont=0;cont<n;cont++){
+        for(int el=0;el<16;el++){
+            unsigned char element = (unsigned char)res[el];
+            res[el]= (element<<1)+over;
+            over = element>>7;
+        }
+        over=0;
+    }
+    return;
+}
