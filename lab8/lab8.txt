@@ -1,0 +1,86 @@
+Laboratório 8 Software Básico - 3WB - 2023.1 - João Pedro Biscaia Fernandes
+
+1-) A modificação fica da seguinte forma:
+  .data
+  s1: .string "ls -ls"
+
+  .text
+  .globl main
+  main:
+  /* prologo */
+    pushq %rbp
+    movq  %rsp, %rbp
+
+  /* coloque seu codigo aqui */
+  movq $s1, %rdi
+  call system
+  /* finalizacao */
+    leave
+    ret
+
+2-)
+
+Executando o programa, recebo a seguinte resposta no terminal:
+3
+0
+7
+8
+0
+
+A alteração para assembly fica da seguinte forma, recebendo o mesmo resultado no terminal:
+Movi o vetor de nums para r12, e o contador foi para o r13. No loop, comparei com 5 o valor do contador, e se for igual, encerro o programa.
+A cada iteração, passei o valor atual do vetor para eax, chamando a função filtro após passar eax para edi e 1(lim) para esi.
+Como o valor de retorno é passado para eax, só passei novamente eax para edi, chamando a função printf e printando o resultado da função.
+
+
+  .data
+  nums: .int 3, -5, 7, 8, -2
+  s1:   .string "%d\n"
+
+  .text
+  .globl main
+  main:
+  /* prologo */
+     pushq %rbp
+     movq  %rsp, %rbp
+     subq  $16, %rsp
+     movq  %rbx, -8(%rbp)
+     movq  %r12, -16(%rbp)
+
+  /* coloque seu codigo aqui */
+    movq $nums, %r12
+    movl $0, %r13d
+
+  L1:
+    cmpl $5, %r13d
+    je L2
+
+    movl (%r12), %eax
+
+    movl %eax, %edi
+    movl $1, %esi
+    call filtro
+
+    movq    $s1, %rdi    /* primeiro parametro (ponteiro)*/
+    movl    %eax, %esi  /* segundo parametro  (inteiro) */
+    movl $0, %eax
+    call  printf       /* chama a funcao da biblioteca */
+
+    addq $4, %r12
+    addl $1, %r13d
+    jmp L1
+
+
+  L2:
+
+
+  /* finalizacao */
+     movq -8(%rbp), %rbx
+     movq -16(%rbp), %r12
+     leave
+     ret
+
+
+
+
+
