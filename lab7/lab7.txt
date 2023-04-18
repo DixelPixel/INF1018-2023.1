@@ -1,0 +1,235 @@
+Software básico 3WB 2023.1 - João Pedro Biscaia Fernandes - 2110361
+Laboratório 7
+1-)Ambos os programas fazem a impressão de caracteres, de acordo com um vetor com valores numéricos. Como todos tem valores menores que 127, tem um valor na tabela ASCII, logo pode-se usar a função printf para printar esses valores como caracteres letras. E quando o caracter for 0, printa o \n.
+
+
+2-)A alteração do código em C ficou da seguinte maneira:
+#include <stdio.h>
+
+
+char S2[]={65,108,111,32,123,103,97,108,101,114,97,125,33,0};
+
+
+int main(void){
+    char *pc = S2;
+    while(*pc){
+        if((*pc!=125)&&(*pc!=123)){
+            printf("%c",*pc++);
+        }else{
+            pc++;
+        }
+    }
+    printf("\n");
+    return 0;
+}
+
+E a correspondente em assembly:
+
+
+.data
+S2:    .byte 65, 108, 111, 32, 123, 103, 97, 108, 101, 114, 97, 125, 33, 0
+Sf:  .string "%c"    /* primeira string de formato para printf */
+Sf2: .string "\n"    /* segunda string de formato para printf */
+
+.text
+.globl  main
+main:
+
+/********************************************************/
+/* mantenha este trecho aqui e nao mexa - prologo !!!   */
+  pushq   %rbp
+  movq    %rsp, %rbp
+  subq    $16, %rsp
+  movq    %rbx, -8(%rbp)  /* guarda rbx */
+  movq    %r12, -16(%rbp)  /* guarda r12 */
+/********************************************************/
+
+  movq  $S2, %r12  /* r12 = &S2 */
+
+L1:
+  cmpb  $0, (%r12)  /* if (*pc == 0) ? */
+  je  L2          /* goto L2 */
+  
+  cmpb $123,(%r12)
+  je L3
+
+  cmpb $125,(%r12)
+  je L3
+
+  movsbl  (%r12), %eax    /* eax = *r12 (estendendo o byte para 32 bits */
+
+/*************************************************************/
+/* este trecho imprime o valor de %eax (estraga %eax)  */
+  movq    $Sf, %rdi    /* primeiro parametro (ponteiro)*/
+  movl    %eax, %esi   /* segundo parametro  (inteiro) */
+  movl  $0, %eax
+  call  printf       /* chama a funcao da biblioteca */
+/*************************************************************/
+L3:
+  addq  $1, %r12  /* r12 += 1; */
+  jmp  L1         /* goto L1; */
+
+L2:  
+/*************************************************************/
+/* este trecho imprime o \n (estraga %eax)                  */
+  movq    $Sf2, %rdi    /* primeiro parametro (ponteiro)*/
+  movl  $0, %eax
+  call  printf       /* chama a funcao da biblioteca */
+/*************************************************************/
+
+/***************************************************************/
+/* mantenha este trecho aqui e nao mexa - finalizacao!!!!      */
+  movq  $0, %rax  /* rax = 0  (valor de retorno) */
+  movq    -16(%rbp), %r12 /* recupera r12 */
+  movq    -8(%rbp), %rbx  /* recupera rbx */
+  leave
+  ret      
+/***************************************************************/
+
+
+3-)
+A alteração em C fica da seguinte forma:
+#include <stdio.h>
+
+int main(void){
+    int i = 1;
+    while(i<=10){
+        printf("%d\n",i*i);
+        i++;
+    }
+    printf("\n");
+    return 0;
+}
+
+
+
+A alteração em assembly fica da seguinte forma:
+
+.data
+Sf:  .string "%d\n"    /* primeira string de formato para printf */
+
+.text
+.globl  main
+main:
+
+/********************************************************/
+/* mantenha este trecho aqui e nao mexa - prologo !!!   */
+  pushq   %rbp
+  movq    %rsp, %rbp
+  subq    $16, %rsp
+  movq    %rbx, -8(%rbp)  /* guarda rbx */
+  movq    %r12, -16(%rbp)  /* guarda r12 */
+/********************************************************/
+  movl $1, %ebx
+
+L1:
+  cmpl  $11, %ebx  /* if (*pc == 0) ? */
+  je  L3        /* goto L3 */
+
+  movl  %ebx, %eax    /* eax = edx */
+  imull %eax, %eax  /* eax = eax² */
+
+/*************************************************************/
+/* este trecho imprime o valor de %eax (estraga %eax)  */
+  movq    $Sf, %rdi    /* primeiro parametro (ponteiro)*/
+  movl    %eax, %esi   /* segundo parametro  (inteiro) */
+  movl  $0, %eax
+  call  printf       /* chama a funcao da biblioteca */
+/*************************************************************/
+  addl $1, %ebx
+  jmp  L1         /* goto L1; */
+ 
+L3:
+/***************************************************************/
+/* mantenha este trecho aqui e nao mexa - finalizacao!!!!      */
+  movq  $0, %rax  /* rax = 0  (valor de retorno) */
+  movq    -16(%rbp), %r12 /* recupera r12 */
+  movq    -8(%rbp), %rbx  /* recupera rbx */
+  leave
+  ret      
+/***************************************************************/
+
+
+Uso o registrador ebx para guardar o valor dos números, comparando com 11(terminando o arquivo seja igual), passando o valor para eax e multiplicando por ele mesmo, depois chamando a função printf, e posteriormente somando 1 ao valor de ebx.
+
+
+4-)
+A alteração para assembly fica da seguinte forma:
+
+/*
+#include <stdio.h>
+
+int nums[4] = {65, -105, 111, 34};
+
+int main (void) {
+  int i;
+  int s = 0;
+
+  for (i=0;i<4;i++)
+    s = s+nums[i];
+
+  printf ("soma = %d\n", s);
+
+  return 0;
+}
+*/
+
+
+.data
+nums:  .int  65, -105, 111, 34
+Sf:  .string "%d\n"    /* primeira string de formato para printf */
+
+.text
+.globl  main
+main:
+
+/********************************************************/
+/* mantenha este trecho aqui e nao mexa - prologo !!!   */
+  pushq   %rbp
+  movq    %rsp, %rbp
+  subq    $16, %rsp
+  movq    %rbx, -8(%rbp)  /* guarda rbx */
+  movq    %r12, -16(%rbp)  /* guarda r12 */
+/********************************************************/
+  movl $0, %ebx
+  movq $nums, %r12
+  movl $0, %ecx
+
+L1:
+  cmpl  $4, %ebx  /* if (*pc == 0) ? */
+  je  L3       /* goto L3 */
+    
+
+  movq %r12, %r13 /*r13 = r12*/  
+
+  movl %ebx, %edx /*edx = ebx*/
+  
+  imull $4, %edx  /*edx = edx*4 --(sizeof int)*/  
+  
+  addq %rdx, %r13  
+  
+  addl (%r13), %ecx  /*ecx = *r13*/
+
+  addl $1, %ebx
+
+  jmp L1
+
+/*************************************************************/
+/* este trecho imprime o valor de %eax (estraga %eax)  */
+/*************************************************************/
+L3:
+  movl %ecx, %eax  
+
+  movq    $Sf, %rdi    /* primeiro parametro (ponteiro)*/
+  movl    %eax, %esi   /* segundo parametro  (inteiro) */
+  movl  $0, %eax
+  call  printf       /* chama a funcao da biblioteca */  
+
+/***************************************************************/
+/* mantenha este trecho aqui e nao mexa - finalizacao!!!!      */
+  movq  $0, %rax  /* rax = 0  (valor de retorno) */
+  movq    -16(%rbp), %r12 /* recupera r12 */
+  movq    -8(%rbp), %rbx  /* recupera rbx */
+  leave
+  ret      
+/***************************************************************/

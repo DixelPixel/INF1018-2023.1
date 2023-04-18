@@ -16,7 +16,7 @@ Laboratório 3 Software Básico 2023.1 João Pedro Biscaia Fernandes
 int odd_ones(unsigned int x){
 	int par=0;
 	for(int i=0;i<32;i++){
-		par = (x>>i)& 0x00000001; 
+		par += (x>>i)& 0x00000001; 
 	}
     if(par&0x00000001){
         return 1;
