@@ -1,0 +1,149 @@
+Laboratório 10 Software Básico 2023.1 - João Pedro Biscaia Fernandes - 2110361
+
+1-) A tradução fica da seguinte forma:
+
+.globl add
+
+.text
+
+add:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movl $0, %ebx /*  a=0  */
+    movq %rdi, %r12
+
+for:
+    cmpq $0, %r12
+    je end
+
+    addl (%r12), %ebx
+
+    movq 8(%r12), %r12
+    jmp for
+
+end:
+    movl %ebx, %eax
+    leave 
+    ret
+
+2-) A tradução fica da seguinte forma:
+
+.globl add2
+
+.text
+
+add2:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    subq $16, %rsp
+
+    cmpq $0, %rdi
+    jne rec
+    movl $0, %eax
+    jmp fim
+
+rec:
+    movl (%rdi), %ebx
+    movl %ebx, -8(%rbp)
+    movq 8(%rdi),%rdi
+    call add2
+    movl -8(%rbp), %r12d
+    addl %eax, %r12d
+    movl %r12d, %eax
+
+fim:
+    movl -8(%rbp), %ebx
+    addq $16, %rsp
+    leave 
+    ret
+
+3-) A tradução fica da seguinte forma:
+
+.text
+.globl boo
+boo:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, %rbx
+    subq $16, %rsp   /*alocando para a pilha*/
+
+    movq %rdi, -8(%rbp)
+    movl %esi, -12(%rbp)
+    movl %edx, -16(%rbp)
+    movq $0, %rdx
+    movq -8(%rbp), %r12
+
+while:
+    cmpl $0, -16(%rbp)
+    je L2
+    movl (%r12), %edi
+    movl -16(%rbp), %esi
+    
+    call f
+
+    movl %eax, 4(%r12)
+    addq $8, %r12
+    subl $1, -16(%rbp)
+
+    jmp while
+
+L2:
+
+    leave 
+    ret
+
+4-) A tradução fica da seguinte forma:
+
+
+.globl map2
+
+.text
+
+map2:
+    pushq %rbp
+    movq %rsp, %rbp
+    subq $32, %rsp
+
+    movq %rdi, -8(%rbp)
+    movq %rsi, -16(%rbp)
+    movl %edx, -20(%rbp)
+    movq $0, %rdi
+    movq $0, %rsi
+    movl $0, %edx
+
+
+    movl $0, %ebx   /* i = 0 */
+
+for:
+    cmpl -20(%rbp), %ebx
+    je end
+
+    movq -8(%rbp), %r12
+    movq -16(%rbp), %r13
+
+    movl %ebx, %r14d
+    imull $4, %r14d
+
+    addq %r14, %r12
+    addq %r14, %r13
+
+    movl (%r12), %edi
+
+    call f 
+
+    movl %eax, (%r13)
+    addl $1, %ebx
+    
+    jmp for
+
+end:
+    movq -8(%rbp), %rdi
+    movq -16(%rbp), %rsi
+    movl -20(%rbp), %edx  
+    addq $32, %rsp
+    leave
+    ret
+    

@@ -2,32 +2,19 @@
 #include <stdlib.h>
 #include "trab1.h"
 
-// int main(void) {
-//   BigInt res,a,b;
-//   big_val(a,0x7fffffffffffffff);
-//   big_val(b,0xfffffffffffff0ff);
-//   printf("a = ");
-//   for(int i =15; i>=0;i--){
-//     printf("%02x",a[i]);
-//   }
-//   printf("\nb = ");
-//   for(int i =15; i>=0;i--){
-//     printf("%02x",b[i]);
-//   }
-//   big_sub(res,a,b);
-//   printf("\nres = ");
-//   for(int i =15; i>=0;i--){
-//     printf("%02x",res[i]);
-//   }
-//   printf("\n");
-//   return 0;
-// }
+
+void cpy (BigInt res, BigInt a){																
+	for(int i=0;i<(NUM_BITS/8);i++){
+		res[i] = a[i];
+	}
+	return;
+}
 
 void big_val (BigInt res, long val){
-  for(int i =0; i<8;i++){
-    res[i]=(unsigned char)((val>>i*8));
+  for(int i =0; i<(NUM_BITS/8)/2;i++){
+    res[i]=(unsigned char)((val>>i*((NUM_BITS/8)/2)));
   }
-  for(int i = 8;i<16;i++){
+  for(int i = 8;i<(NUM_BITS/8);i++){
     if((val&0x8000000000000000)==0x8000000000000000){
       unsigned char val = 0xff;
       res[i]=val;
@@ -97,7 +84,7 @@ void big_shl(BigInt res, BigInt a, int n){
 
 void big_comp2(BigInt res, BigInt a){
   char prox =1;
-  if((a[15]& 0x80) ==0x80){
+  if((a[(NUM_BITS/8)-1]& 0x80) ==0x80){
     for(int i = 0;i<16;i++){
         res[i] = ~a[i]+prox; 
         if(res[i]!=0){
@@ -106,7 +93,7 @@ void big_comp2(BigInt res, BigInt a){
     }
   }
   else{
-    for(int i = 0;i<16;i++){
+    for(int i = 0;i<(NUM_BITS/8);i++){
         res[i] = ~a[i]+prox; 
         if(res[i]!=0){
           prox = 0;
@@ -118,10 +105,10 @@ void big_comp2(BigInt res, BigInt a){
 void big_sum (BigInt res, BigInt a, BigInt b){
   char resto = 0;
   //casos de soma com positivos:
-  if(((a[15]& 0x80) == 0x00)&&((b[15] & 0x80) == 0x00)){
-    for(int i = 0;i<16;i++){
+  if(((a[(NUM_BITS/8)-1]& 0x80) == 0x00)&&((b[(NUM_BITS/8)-1] & 0x80) == 0x00)){
+    for(int i = 0;i<(NUM_BITS/8);i++){
       res[i]= a[i]+b[i]+resto;
-      if(a[i]>=0x7f||b[i]>=0x7f){
+      if(a[i]+b[i]+resto>=0xff){
         resto = 1;
       }
       else{
@@ -131,12 +118,12 @@ void big_sum (BigInt res, BigInt a, BigInt b){
     return;
   }
   // caso de soma com a e b negativos:
-  else if(((a[15]& 0x80) == 0x80)&&((b[15] & 0x80) == 0x80)){
+  else if(((a[(NUM_BITS/8)-1]& 0x80) == 0x80)&&((b[(NUM_BITS/8)-1] & 0x80) == 0x80)){
     big_comp2(a,a);
     big_comp2(b,b);
-    for(int i = 0;i<16;i++){
+    for(int i = 0;i<(NUM_BITS/8);i++){
       res[i]= a[i]+b[i]+resto;
-      if(a[i]>=0x7f||b[i]>=0x7f){
+      if(a[i]+b[i]+resto>0xff){
         resto = 1;
       }
       else{
@@ -147,7 +134,7 @@ void big_sum (BigInt res, BigInt a, BigInt b){
     return;
   }
   //a < 0 e b>0: res = b - a
-  else if((a[15]&0x80)==0x80){
+  else if((a[(NUM_BITS/8)-1]&0x80)==0x80){
     big_sub(res,b,a);
     return;
   }
@@ -162,26 +149,48 @@ void big_sum (BigInt res, BigInt a, BigInt b){
 void big_sub (BigInt res, BigInt a, BigInt b){
   //convertendo b para negativo ou positivo:
   // a > 0 && b < 0 : a - (-b) = a+b  || a<0 && b > 0: -a - (-b) = -(a+b)
-  if((((a[15]& 0x80) == 0x00)&&((b[15] & 0x80) == 0x80))||(((a[15]& 0x80) == 0x80)&&((b[15] & 0x80) == 0x00))){
+  if((((a[(NUM_BITS/8)-1]& 0x80) == 0x00)&&((b[(NUM_BITS/8)-1] & 0x80) == 0x80))||(((a[(NUM_BITS/8)-1]& 0x80) == 0x80)&&((b[(NUM_BITS/8)-1] & 0x80) == 0x00))){
     big_comp2(b,b);
     big_sum(res,a,b);
     return;
   }
   else{
-    big_comp2(b,b);
     char resto = 0;
-    for(int i = 0;i<16;i++){
+    for(int i = 0;i<(NUM_BITS/8);i++){
       if(b[i]>a[i]){
-        res[i] = (b[i]+a[i]-resto);
+        res[i] = -1*(b[i]-(a[i]-resto));
         resto = 1;
       }
       else{
-        res[i] = (a[i]+b[i]-resto);
-        resto = 0;
+        res[i] = (a[i]-b[i]);
+        if(res[i]==0 && resto == 1){
+          res[i]= 0xff;
+        }
+        else{
+          res[i]-=resto;
+          resto = 0;
+        }
       }
 
     }
-    printf("\n");
     return;
   }
+}
+
+void big_mul (BigInt res, BigInt a, BigInt b){
+  BigInt a1,b1;
+  cpy(a1,a);
+  cpy(b1,b);
+
+  long n = 0;
+  big_val(res,n);
+  for (int i = 0; i < (NUM_BITS/8); i++) {
+    unsigned int over = 0;
+    for (int j = 0; j < (NUM_BITS/8) - i; j++) {
+        int tmp= a1[j]*b1[i]+ over+ res[i+j];
+        over= tmp>>8;
+        res[i+j]= tmp;
+    }
+  }
+  return;
 }
