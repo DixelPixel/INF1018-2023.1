@@ -19,6 +19,10 @@ foo:
   pushq %rbp
   movq %rsp, %rbp
 
+  subq $16, %rsp
+  movl %ebx, -4(%rbp)
+  movl %ecx, -8(%rbp)
+
   movl $0, %ebx   /* i = 0*/
   movl $0, %ecx  /* s = 0 // como não chamo função, não tem problema usar o registrador que seria o quarto parâmetro.*/
   
@@ -47,5 +51,9 @@ Cont:
   jmp Loop
 
 L1:
+  movl -4(%rbp), %ebx
+  movl -8(%rbp), %ecx
+  addq $16, %rsp
   leave
+  ret
   

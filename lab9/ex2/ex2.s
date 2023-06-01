@@ -27,6 +27,7 @@ L2:
   movl %r12d, %eax
 
 L1:
-    leave
-    ret
+  addq $16, %rsp
+  leave
+  ret
   

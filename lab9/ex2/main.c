@@ -4,7 +4,7 @@
 int fat(int n);
 
 int main(void){
-    int l = fat(5);
+    unsigned int l = fat(4);
 
     printf("%d\n", l);
 }
