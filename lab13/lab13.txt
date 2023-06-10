@@ -1,0 +1,54 @@
+Laboratório 13 Software Básico 2023.1 - João pedro Biscaia fernandes
+
+3-) O Código ficou da seguinte forma:
+
+#include <stdio.h>  
+
+
+typedef int (*funcp) (int x);     
+unsigned char codigo[];
+
+int main(void) {
+        codigo = {
+                0x55,                        
+                0x48, 0x89, 0xe5,            
+                0xff, 0xc7,                  
+                0x89, 0xf8,                  
+                0xc9,                        
+                0xc3                         
+        };
+	funcp f=(funcp)codigo;
+	int i = (*f)(10);
+        printf("O valor de i é %d\n", i);
+	
+	return 0;
+}
+Precisei colocar o valor de codigo na função main, pois senão colocasse sempre daria segmentation fault.
+
+5-)
+A alteração Fica da seguinte forma:
+#include <stdio.h>  
+
+typedef int (*funcp) (int x);     
+
+int main(void) {
+        int add(int x){
+                return x+1;
+        }
+
+        unsigned char codigo[] = {0xe8, 0x00, 0x00, 0x00, 0x00, 0xc3};
+        int deslocamento = (unsigned char*)&add - &(codigo[5]);
+        codigo[1] = deslocamento;
+        codigo[2] = deslocamento >> 8;
+        codigo[3] = deslocamento >> 16;
+        codigo[4] = deslocamento >> 24;
+
+        funcp f=(funcp)codigo;
+	int i = (*f)(20);
+        printf("O valor de i é %d\n", i);
+	return 0;
+}
+
+Cada byte foi encontrado fazendo um bitshift do deslocamento encontrado.
+
+6-)Alterando o código acima por 0xe9, de fato ainda rodou o código da mesma maneira.
