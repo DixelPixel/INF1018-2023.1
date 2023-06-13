@@ -35,7 +35,8 @@ static int execpage(void *ptr, size_t len) {
 #undef PAGE_START
 #undef PAGE_END 
 
-typedef int (*funcp) (int x);     
+typedef int (*funcp) (int x);  
+   
 
 int main(void) {
         int add(int x){
